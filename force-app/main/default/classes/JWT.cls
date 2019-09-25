@@ -12,14 +12,17 @@ public with sharing class JWT {
     public String pkcs8 {get;set;}
     public String privateKey {get;set;}
 
+
     public static final String HS256 = 'HS256';
     public static final String RS256 = 'RS256';
     public static final String NONE = 'none';
+
 
     public JWT(String alg) {
         this.alg = alg;
         this.validFor = 300;
     }
+
 
     public String issue() {
 
@@ -28,7 +31,9 @@ public with sharing class JWT {
         JSONGenerator header = JSON.createGenerator(false);
         header.writeStartObject();
         header.writeStringField('alg', this.alg);
-        header.writeStringField('typ', 'JWT');
+        if (string.isBlank(pkcs8)){
+            header.writeStringField('typ', 'JWT');
+        }
         header.writeEndObject();
         String encodedHeader = base64URLencode(Blob.valueOf(header.getAsString()));
 
